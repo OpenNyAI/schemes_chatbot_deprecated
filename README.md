@@ -10,7 +10,7 @@ Multiple AI components are put together to achieve this bot. ![](images/jugalban
 ### Data 
 We scraped the Indian government welfare schemes data from https://www.myscheme.gov.in/. 
 
-### AI components used
+### Jugalbandi Building Blocks
 #### 2.1 Messaging App
 The bot can be deployed on popular messaging platforms of your choice like whatsapp or telegram. Ability to send voice notes and receiving the responses as voice notes is the key feature of this bot.
 #### 2.2 Bhashini
@@ -20,7 +20,9 @@ Embeddings models of OpenAI were used for doing the scheme searches.
 Davinci3 models of OpenAI were used to perform most of the reasoning and generate user responses.
 #### 2.4 Jugalbandi Reasoning Engine
 Jugalbandi Reasoning Engine is a finite state machine which uses openAI model responses to perform state transitions.
-![](images/state_diagram.png). In User Need Exrtaction, the goal of the chatbot is to capture the user need so as to find most relevant government schemes for the user.
+![](images/state_diagram.png)
+In User Need Extraction state, the goal of the chatbot is to capture the user need so as to find most relevant government schemes for the user. Filtered scheme name disambiguation state is where bot needs clarification from user about which scheme user is interested in. In Specific scheme conversation state, user discusses about a specific welfare scheme.
+After each of the user inputs, openAI LLM is called to decide what should be the user response and next state.
 
 ## Run bot API
 
