@@ -15,7 +15,6 @@ COPY ./data /root/data
 COPY ./gupshup /root/gupshup
 COPY ./models /root/models
 COPY ./openai_utility /root/openai_utility
-COPY ./a0ae7026506d.json /root/
 COPY ./*.py /root/
 EXPOSE 8080
 COPY script.sh /root/
