@@ -12,7 +12,7 @@ RUN pip3 install asyncpg
 RUN pip3 install -r requirements.txt
 RUN apt-get update
 COPY ./data /root/data
-COPY ./gupshup /root/gupshup
+COPY ./.env /root/
 COPY ./models /root/models
 COPY ./openai_utility /root/openai_utility
 COPY ./*.py /root/

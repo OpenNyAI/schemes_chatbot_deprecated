@@ -13,8 +13,8 @@ from chat import chatbot_flow
 from database import create_engine, PostgresDatabase
 from wasabi import msg
 
-# from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(title='JugalBandi API')
 language_options = {'English': 'en', 'हिन्दी': 'hi', 'বাংলা': 'bn', 'தமிழ்': 'ta', 'తెలుగు': 'te', 'ਪੰਜਾਬੀ': 'pa'}

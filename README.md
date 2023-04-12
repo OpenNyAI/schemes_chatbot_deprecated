@@ -25,6 +25,27 @@ In User Need Extraction state, the goal of the chatbot is to capture the user ne
 After each of the user inputs, openAI LLM is called to decide what should be the user response and next state.
 
 ## Run bot API
+Our bot API is build over FastAPI and uses Postgresql as the database. Before you can start running the API you need to 
+set up some basic requirements given below: 
+#### Step 1: Setting up your database 
+* You have to create a postgresql database and then update its credentials in `.env` file.
+#### Step 2: Setting up your cloud storage 
+When using voice/audio conversation you need a place to store all the recordings and have a public url for them so that popular messaging application or your own app can work. 
+* Fo this we have done the implementation for GCP, you can create a service account credential json file, and update ist path in `.env` file.
+
+*Note: To use other cloud platform you can do an implementation for them in [cloud_filestorage.py](cloud_filestorage.py)*
+#### Step 3: Installing requirements
+```shell
+pip install requirements.txt
+```
+#### Step 4: Starting the API
+```shell
+uvicorn main:app --host 0.0.0.0 --port 8080  --workers 1
+```
+
+This will start the API on 8080 port on which you can open the docs of API as `http://localhost:8080/docs` 
+
+Alternatively, we have provided docker file which you can use to make a docker image after making appropriate changes and deploy over a service.
 
 ## Acknowledgments
 This work is part of [OpenNyAI](https://opennyai.org/) mission which is funded by [EkStep](https://ekstep.org/)
