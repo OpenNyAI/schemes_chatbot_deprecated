@@ -27,3 +27,5 @@ After each of the user inputs, openAI LLM is called to decide what should be the
 ## Run bot API
 
 ## Acknowledgments
+This work is part of [OpenNyAI](https://opennyai.org/) mission which is funded by [EkStep](https://ekstep.org/)
+and [Agami](https://agami.in/). 
