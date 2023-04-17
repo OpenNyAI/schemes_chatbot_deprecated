@@ -106,7 +106,7 @@ def create_user_response_for_best_matching_schemes(best_matching_schemes):
         user_response = 'I found following schemes which might be helpful. Which one would you like to know more about?'
         for i, scheme in enumerate(best_matching_schemes):
             user_response = user_response + '\n' + str(i + 1) + ") " + scheme
-            if all_schemes_information_dict.get(scheme) is not None:
+            if all_schemes_information_dict.get(scheme) is not None and len(best_matching_schemes)<=max_schemes_to_show:
                 user_response = user_response + ': ' + \
                             all_schemes_information_dict.get(scheme)['summary']
     else:
@@ -178,7 +178,7 @@ class scheme_chatbot_fsm():
                                     source='user_information_extraction',
                                     dest='specific_scheme_name_disambiguation',
                                     conditions=['check_specific_need_or_specific_scheme',
-                                                'check_if_multiple_schemes_less_than_5_found'],
+                                                'check_if_multiple_schemes_found'],
                                     after=self.update_user_response_and_next_prompt_for_multiple_matching_schemes)
 
         self.machine.add_transition(trigger='information_extraction',
@@ -228,6 +228,11 @@ class scheme_chatbot_fsm():
                                     dest='specific_scheme_conversation',
                                     after=self.update_user_response_and_next_prompt_for_specific_scheme_continuation)
 
+        self.machine.add_transition(trigger='continue_scheme_conversation',
+                                    source='specific_scheme_name_disambiguation',
+                                    dest='specific_scheme_name_disambiguation',
+                                    after=self.update_user_response_and_next_prompt_for_ambiguous_scheme_selection)
+
     def check_specific_need_or_specific_scheme(self) -> bool:
         #### check if user has expressed a specific need or asking for specific scheme
         try:
@@ -258,7 +263,14 @@ class scheme_chatbot_fsm():
             return True
         else:
             return False
-
+    def check_if_multiple_schemes_found(self) -> bool:
+        #### Return whether multiple schemes have been found for user need
+        if not self.scheme_search_result:
+            self.search_scheme_for_user_need()
+        if len(self.scheme_search_result) > 1:
+            return True
+        else:
+            return False
     def check_if_single_scheme_found(self) -> bool:
         #### Return whether unique scheme has been found for user need
         if not self.scheme_search_result:
@@ -396,7 +408,7 @@ class scheme_chatbot_fsm():
 
     def update_user_response_and_next_prompt_for_ambiguous_scheme_selection(self):
         ### user has not selected one name from options then ask user for more clarity
-        bot_response = 'I could not select one scheme from previously displayed schme list based your response. Please select one name from previously shown scheme names. If you want search for a different need then please mention that you want to search for a different need and say your need.'
+        bot_response = 'I could not select one scheme from previously displayed schme list based your response. Please select one name from previously shown scheme names. If you want search for a different need then please type "hi".'
         self.user_response = bot_response
         best_matching_schemes = self.current_scheme_name.split('||')
         self.next_prompt = create_prompt_for_filtered_scheme_name_disambiguation(best_matching_schemes)
@@ -406,19 +418,22 @@ class scheme_chatbot_fsm():
         ##### multiple schemes found and hence ask user which scheme he/she wants
 
         best_matching_schemes = self.scheme_search_result
-        if len(best_matching_schemes) <= 5:
-            self.user_response = create_user_response_for_best_matching_schemes(best_matching_schemes)
-            self.next_prompt = create_prompt_for_filtered_scheme_name_disambiguation(best_matching_schemes)
-            self.next_scheme_name = '||'.join(best_matching_schemes)
-        else:
-            if self.clarifying_question:
-                self.user_response = self.clarifying_question
-                self.next_prompt = self.current_prompt
-                self.next_scheme_name = self.current_scheme_name
-            else:
-                self.user_response = create_user_response_for_too_many_matching_schemes(best_matching_schemes)
-                self.next_prompt = self.current_prompt
-                self.next_scheme_name = self.current_scheme_name
+        self.user_response = create_user_response_for_best_matching_schemes(best_matching_schemes)
+        self.next_prompt = create_prompt_for_filtered_scheme_name_disambiguation(best_matching_schemes)
+        self.next_scheme_name = '||'.join(best_matching_schemes)
+        # if len(best_matching_schemes) <= 5:
+        #     self.user_response = create_user_response_for_best_matching_schemes(best_matching_schemes)
+        #     self.next_prompt = create_prompt_for_filtered_scheme_name_disambiguation(best_matching_schemes)
+        #     self.next_scheme_name = '||'.join(best_matching_schemes)
+        # else:
+        #     if self.clarifying_question:
+        #         self.user_response = self.clarifying_question
+        #         self.next_prompt = self.current_prompt
+        #         self.next_scheme_name = self.current_scheme_name
+        #     else:
+        #         self.user_response = create_user_response_for_too_many_matching_schemes(best_matching_schemes)
+        #         self.next_prompt = self.current_prompt
+        #         self.next_scheme_name = self.current_scheme_name
 
     def update_user_response_and_next_prompt_for_single_matching_schemes(self):
         single_best_scheme = self.next_scheme_name
