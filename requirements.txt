@@ -57,3 +57,4 @@ langchain==0.0.74
 faiss-gpu==1.7.2
 python-telegram-bot==20.0
 asyncpg==0.27.0
+wasabi
