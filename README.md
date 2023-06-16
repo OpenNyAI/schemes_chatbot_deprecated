@@ -25,6 +25,10 @@ uvicorn main:app --host 0.0.0.0 --port 8080  --workers 1
 
 This will start the API on 8080 port on which you can open the docs of API as `http://localhost:8080/docs` 
 
+#### Step 5: Set up an API key in database
+Once you setup and try to use the API you will face an authentication error. This initial error will trigger creation of tables in database.
+Now, You need to go to table 'jugalbandi_tokens' and mannualy create an API key. And then authorise the api with thje key you have created.
+
 Alternatively, we have provided docker file which you can use to make a docker image after making appropriate changes and deploy over a service.
 
 ## 3. How the bot works?
