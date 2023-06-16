@@ -8,7 +8,6 @@ import requests
 import pytz
 
 from utils import mask_sensitive_info
-from gupshup.outbound_message import send_whatsapp_message
 from bot_preference import scheme_v1
 from cloud_filestorage import upload_file_and_get_public_url
 from io_processing import process_incoming_voice, process_outgoing_voice, process_outgoing_text, process_incoming_text
@@ -79,7 +78,6 @@ async def chatbot_flow(db_object, chat_id, message, message_type, acknowledgemen
         # Acknowledge the request
         if message_type != 'text':
             temp_response = acknowledgements[language_preference] + user_regional_lang_text
-            await send_whatsapp_message(chat_id, temp_response, message_type='text')
         message = mask_sensitive_info(message)
         if bot_preference == 'scheme_v1' or bot_preference is None:
             current_conversation_chunk_id, current_scheme_conversation_summary, current_scheme_name, davinci_response, new_conversation_chunk_id, current_prompt, next_prompt_name, next_prompt, llm_output = await scheme_v1(
